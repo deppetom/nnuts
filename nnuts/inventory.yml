@@ -1,0 +1,13 @@
+# BEGIN ANSIBLE MANAGED BLOCK
+[proxy]
+node1
+
+[webservers]
+node2
+
+[database]
+node3
+
+[test]
+node4
+# END ANSIBLE MANAGED BLOCK

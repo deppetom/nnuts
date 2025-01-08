@@ -1,0 +1,68 @@
+---
+- name: create automation user
+  hosts: localhost
+  vars:
+    homedir: /home/automation/nnuts
+    configfile: /home/automation/nnuts/ansible.cfg
+    rolespath: roles_path = /home/automation/nnuts/roles
+    inventoryfile: /home/automation/nnuts/inventory.yml
+    inventorypath: inventory = /home/automation/nnuts/inventory.yml
+    forks: forks = 10
+    remoteuser: remote_user = automation
+    host_key: host_key_checking = False
+  tasks:
+  - name: create automation account for ansible
+    user:
+      name: automation
+      password: "$6$saltvalue$alu5DPFJq1cAG.NXvg2aLAXXhpw9bWlTc2N1oTytaBhbr9OJfAqsna6gEjOF75Ck3OhpeZeVaMckJ1Wk7yOFj0"
+      state: present
+      generate_ssh_key: yes
+      ssh_key_file: .ssh/id_rsa
+  - name: create plays directory
+    file:
+      path: "{{ homedir }}"
+      state: directory 
+      owner: automation
+      group: automation
+      mode: 0744
+  - name: copy config file to controller
+    template:
+      src: ansible.j2
+      dest: "{{ configfile }}"  
+  - name: create inventory file
+    file:
+      path: "{{ inventoryfile }}"
+      state: touch
+      owner: automation
+      group: automation
+      mode: 0644
+  - name: create inventory file
+    blockinfile:
+      path: "{{ inventoryfile }}"
+      block: | 
+        [proxy]
+        node1
+
+        [webservers]
+        node2
+
+        [database]
+        node3
+
+        [test]
+        node4
+      owner: automation
+      group: automation
+      mode: 0644
+  - name: create /etc/hosts file
+    blockinfile:
+      path: /etc/hosts
+      block: | 
+        192.168.86.146  node1  node1.nnuts.lab
+        192.168.86.147  node2  node2.nnuts.lab
+        192.168.86.148  node3  node3.nnuts.lab
+        192.168.86.149  node4  node4.nnuts.lab
+      owner: root
+      group: root
+      mode: 0644
+
