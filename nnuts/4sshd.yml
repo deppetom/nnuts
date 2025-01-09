@@ -1,0 +1,19 @@
+---
+- name: deploy the ssh config
+  hosts: all
+  become: yes
+  tasks:
+  - name: configure ssh
+    copy:
+      src: files/sshd_config
+      dest: /etc/ssh/sshd_config
+      owner: root
+      group: root
+      mode: 0600
+      backup: yes
+    notify: restart_ssh
+  handlers:
+  - name: restart_ssh
+    service: 
+      name: sshd
+      state: restarted
