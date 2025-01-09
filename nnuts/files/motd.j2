@@ -1,0 +1,9 @@
+{% if 'proxy' in group_names %}
+Welcome to the HAProxy Server
+{% endif %}
+{% if 'webservers' in group_names %}
+Welcome to the Apache server
+{% endif %}
+{% if 'database' in group_names %}
+Welcome to the MySQL server
+{% endif %}
